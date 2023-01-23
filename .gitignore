@@ -9,7 +9,7 @@ lerna-debug.log*
 
 node_modules
 .DS_Store
-#dist -- include for github pages hosting
+dist
 dist-ssr
 coverage
 *.local
