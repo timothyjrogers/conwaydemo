@@ -1,12 +1,13 @@
 <script lang="ts">
+import { defineComponent } from 'vue'
 import WorldCanvas from '../components/WorldCanvas.vue'
-export default {
+export default defineComponent({
   components: {
     WorldCanvas
   },
   data() {
     return {
-      gridsize: "100",
+      gridsize: 100,
       genpct: 10,
       simulating: false,
       cells: [],
@@ -24,26 +25,26 @@ export default {
       this.cells = [];
       this.simulating = false;
     },
-    updateLivingCells(val) {
+    updateLivingCells(val: number) {
       this.livingCells = val;
     },
-    updateGeneration(val) {
+    updateGeneration(val: number) {
       this.generation = val;
     },
     togglePause() {
       if (this.paused) {
         this.paused = false;
-        document.getElementById('pause-button').innerText = 'Pause';
+        document.getElementById('pause-button')!.innerText = 'Pause';
       } else {
         this.paused = true;
-        document.getElementById('pause-button').innerText = 'Resume';
+        document.getElementById('pause-button')!.innerText = 'Resume';
       }
     },
     step() {
       this.steps = this.steps + 1;
     }
   }
-}
+})
 </script>
 
 <template>
@@ -52,7 +53,7 @@ export default {
       <h3 id="section-header">Configure Simulation</h3>
       <div class="setting-wrapper">
         <label class="setting-label" for="gridsize">Grid Size</label>
-        <input v-model="gridsize" type="range" id="gridsize" name="gridsize" min="10" max="100">
+        <input v-model.number=gridsize type="range" id="gridsize" name="gridsize" min="10" max="100">
         <span class="setting-value">{{ gridsize }}</span>
       </div>
       <div class="setting-wrapper">

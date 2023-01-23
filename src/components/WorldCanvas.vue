@@ -1,17 +1,19 @@
 <script lang="ts">
-export default {
+import { defineComponent } from 'vue'
+export default defineComponent({
    props: {
-    size: String,
-    genpct: Number,
-    paused: Boolean,
-    manualSteps: Number
+    size: { type: Number, required: true},
+    genpct: { type: Number, required: true},
+    paused: { type: Boolean, required: true},
+    manualSteps: { type: Number, required: true}
   },
   data() {
       return {
-          timer: null,
-          cells: [],
+          timer: null as number | null,
+          cells: [] as Array<Boolean>,
           livingcells: 0,
-          generation: 0
+          generation: 0,
+          worldCanvas: null as CanvasRenderingContext2D | null
       }
   },
   methods: {
@@ -27,14 +29,14 @@ export default {
         this.$emit('livingcells', this.livingcells)
       },
       drawWorld() {
-        this.worldCanvas.fillStyle = "rgb(255, 255, 255)";
-        this.worldCanvas.fillRect(0, 0, this.getDimension, this.getDimension);
-        this.worldCanvas.fillStyle = "rgb(0, 0, 0)";
+        (this.worldCanvas! as CanvasRenderingContext2D).fillStyle = "rgb(255, 255, 255)";
+        (this.worldCanvas! as CanvasRenderingContext2D).fillRect(0, 0, this.getDimension, this.getDimension);
+        (this.worldCanvas! as CanvasRenderingContext2D).fillStyle = "rgb(0, 0, 0)";
         for (var i = 0; i < this.cells.length; i++) {
               var x = 5 * (i % this.size);
               var y = 5 * Math.floor(i / this.size);
             if (this.cells[i]) {
-                this.worldCanvas.fillRect(x, y, 5, 5);
+                (this.worldCanvas! as CanvasRenderingContext2D).fillRect(x, y, 5, 5);
             }
         }
       },
@@ -106,11 +108,11 @@ export default {
   watch: {
       paused: function(updatedVal, originalVal) {
           if (!originalVal) {
-              clearInterval(this.timer);
+              clearInterval(this.timer!);
           } else {
             this.timer = setInterval(() => {
                 this.updateWorld()
-            }, 1000)
+            }, 1000) as number;
           }
       },
       manualSteps: function(updatedVal, originalVal) {
@@ -118,21 +120,21 @@ export default {
       }
   },
     mounted() {
-        var canvas = document.getElementById("world-canvas");
-        var ctx = canvas.getContext("2d");    
-        this.worldCanvas = ctx;
-        this.worldCanvas.fillStyle = "rgb(255, 255, 255)";
-        this.worldCanvas.fillRect(0, 0, this.getDimension, this.getDimension);
+        var canvas = <HTMLCanvasElement> document.getElementById("world-canvas")!;
+        var ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");    
+        this.worldCanvas = ctx as CanvasRenderingContext2D;
+        (this.worldCanvas! as CanvasRenderingContext2D).fillStyle = "rgb(255, 255, 255)";
+        (this.worldCanvas! as CanvasRenderingContext2D).fillRect(0, 0, this.getDimension, this.getDimension);
         this.initializeSimulation();
         this.drawWorld();
         this.timer = setInterval(() => {
             this.updateWorld()
-        }, 1000)
+        }, 1000) as number;
     },
     beforeUnmount() {
-        clearInterval(this.timer)
+        clearInterval(this.timer!)
     }
-}
+})
 </script>
 
 <template>
